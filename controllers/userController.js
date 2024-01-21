@@ -2,6 +2,7 @@ const userSchema = require("../models/userModel");
 const { cloudinaryUploadImages } = require("../utils/cloudinary");
 const { generateToken } = require("../utils/tokenGenerator");
 const asyncHandler = require("express-async-handler");
+const bcrypt =require('bcrypt')
 const fs = require("fs");
 const path = require("path");
 
@@ -37,16 +38,29 @@ const loginHandler = async (req, res, next) => {
     const token = await generateToken(findUser._id);
     const updateUser = await userSchema.findByIdAndUpdate(
       findUser._id,
-      { token },
+      { token }, 
       { new: true }
     );
+    const userData=await userSchema.findById(findUser._id,{token:1,_id:0})
     res.cookie("token", token, { httpOnly: true, maxAge: 48 * 60 * 60 * 1000 });
-    res.json(updateUser);
+    res.json(userData);
   } catch (error) {
     const err = new Error(error);
     next(err);
   }
 };
+
+
+const profileGetter=async(req,res,next)=>{
+  const { _id } = req?.user;
+  try {
+    const userData=await userSchema.findById(_id,{image:0,password:0,token:0,todo_list:0})
+    res.json(userData)
+  } catch (error) {
+    const err = new Error(error);
+    next(err);
+  }
+}
 
 const updateUser = async (req, res, next) => {
   const { _id } = req?.user;
@@ -115,4 +129,5 @@ module.exports = {
   updateUser,
   logoutUser,
   Imageuploader,
+  profileGetter
 };

@@ -17,23 +17,16 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// app.use("/api/user",userRouter)
-// app.use("/api/todo",todoRouter);
+app.use("/api/user",userRouter)
+app.use("/api/todo",todoRouter);
 
-// app.use(errorHandler)
+app.use(errorHandler)
 
 const connection =async()=>{
-  // await dbConnector();
-  // app.listen(process.env.SERVER_PORT, () => {
-  //   console.log(`Server is listening at Port ${process.env.SERVER_PORT}`);
-  // });
-  app.get("/",(req,res)=>{
-         res.json("Hai from server")
-  })
-  app.listen(process.env.SERVER_PORT,()=>{
-    console.log("Server is listening");
-  })
-
+  await dbConnector();
+  app.listen(process.env.SERVER_PORT, () => {
+    console.log(`Server is listening at Port ${process.env.SERVER_PORT}`);
+  });
 }
 
 connection();

@@ -34,8 +34,9 @@ const updateList = async (req, res, next) => {
 };
 
 const getAllList = async (req, res, next) => {
+
   try {
-    const lists = await todoSchema.find();
+    const lists = await todoSchema.find({createdBy:req.user._id});
     res.json(lists);
   } catch (error) {
     const err = new Error(error);

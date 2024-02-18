@@ -3,6 +3,7 @@ const userSchema = require("../models/userModel");
 
 const authMiddleware = async (req, res, next) => {
   try {
+   
     if (req?.headers?.authorization.startsWith("Bearer")) {
       const token = req?.headers?.authorization.split(" ")[1];
       try {
@@ -19,7 +20,7 @@ const authMiddleware = async (req, res, next) => {
       next(err);
     }
   } catch (error) {
-    const err = new Error("Not token found");
+    const err = new Error("Token not found");
     next(err);
   }
 };

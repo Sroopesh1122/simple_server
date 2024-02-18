@@ -24,7 +24,7 @@ const createUser = async (req, res, next) => {
 };
 
 const loginHandler = async (req, res, next) => {
-  const { email, password } = req?.body;
+    const { email, password } = req?.body;
   try {
     const findUser = await userSchema.findOne({ email });
     if (!findUser) {
@@ -34,6 +34,7 @@ const loginHandler = async (req, res, next) => {
     if (!(await findUser.isPasswordMatched(password))) {
       const err = new Error("Password not matched");
       next(err);
+      return 
     }
     const token = await generateToken(findUser._id);
     const updateUser = await userSchema.findByIdAndUpdate(
@@ -48,11 +49,13 @@ const loginHandler = async (req, res, next) => {
     const err = new Error(error);
     next(err);
   }
+ 
 };
 
 
 const profileGetter=async(req,res,next)=>{
   const { _id } = req?.user;
+//  setTimeout(async()=>{
   try {
     const userData=await userSchema.findById(_id,{image:0,password:0,token:0,todo_list:0})
     res.json(userData)
@@ -60,6 +63,7 @@ const profileGetter=async(req,res,next)=>{
     const err = new Error(error);
     next(err);
   }
+//  },8000)
 }
 
 const updateUser = async (req, res, next) => {
